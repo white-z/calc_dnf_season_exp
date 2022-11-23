@@ -1,19 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>T</title>
-    
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>DNF战令经验估算</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Import style -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css" />
+    <!-- Import Vue 3 -->
+    <script src="https://unpkg.com/vue@3"></script>
+    <!-- Import component library -->
+    <script src="https://unpkg.com/element-plus"></script>
+    <style>
+      .item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .label {
+        font-size: 12px;
+        margin-right: 12px;
+        white-space: nowrap;
+      }
+    </style>
 </head>
 
 <body>
   <div id="app">
-    <div><label>当前日期：</label><input type="date" v-model="nowDate"> 距离{{lastDate}}还有{{days}}天</div> 
-    <div><label>当前等级：</label><input v-model.number="currentLevel" type="text"></div>
-    <div><label>距离满级所需经验：</label><input v-model.number="stillNeed" readonly type="text"></div>
-    <div><label>全勤可获取经验（仅包含每日/每周任务）：</label><input v-model.number="dailyEX" readonly type="text"></div>
-    <div><label>还需经验（通过赛季任务或充值）：</label><input v-model="gap" readonly type="text"></div>
+    <div style="margin: 12px;"> 距离第九季结束日{{lastDate}}还有{{days}}天</div>
+    <div class="item"><label class="label">当前日期：</label><el-input type="date" v-model="nowDate" /></div> 
+    <div class="item"><label class="label">当前等级：</label><el-input v-model.number="currentLevel" type="number" /></div>
+    <div class="item"><label class="label">距离满级所需经验：</label><div v-text="stillNeed"></div></div>
+    <div class="item"><label class="label">全勤可获取经验（仅包含每日/每周任务）：</label><div v-text="dailyEX" ></div></div>
+    <div class="item"><label class="label">还需经验（通过赛季任务或充值）：</label><div v-text="gap"></div></div>
   </div>
 
   <script>
@@ -119,14 +137,15 @@
       100: 10000,
       101: 10000
     }
+
     const { createApp } = Vue
     
-    createApp({
+    const app = createApp({
       data() {
         return {
           lastDate: '2022-12-21',
           nowDate: '2022-' + (new Date().getMonth() + 1) + '-' + new Date().getDate(),
-          currentLevel: 2
+          currentLevel: 1
         }
       },
       computed: {
@@ -135,7 +154,7 @@
             return 0
           }
           let ex = 0
-          for(i = this.currentLevel; i <= 101; i++) {
+          for(i = this.currentLevel + 1; i <= 100; i++) {
             ex += LEVEL[i]
           }
           return ex
@@ -169,7 +188,9 @@
           return this.stillNeed - this.dailyEX
         },
       }
-    }).mount('#app')
+    })
+    app.use(ElementPlus)
+    app.mount('#app')
   </script>
 </body>
 </html>
